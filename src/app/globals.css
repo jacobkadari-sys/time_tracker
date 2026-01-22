@@ -1,0 +1,170 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Retro DoG Theme */
+:root {
+  --dog-orange: #FF6B35;
+  --dog-cream: #F7F0E3;
+  --dog-brown: #4A3728;
+  --dog-tan: #C9B896;
+  --dog-green: #2D5016;
+  --dog-red: #D32F2F;
+  --dog-blue: #1565C0;
+}
+
+body {
+  font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+  background-color: var(--dog-cream);
+  color: var(--dog-brown);
+}
+
+/* Retro button styles */
+@layer components {
+  .btn-retro {
+    @apply px-4 py-2 font-bold border-2 border-dog-brown shadow-retro
+           transition-all duration-100 active:translate-x-1 active:translate-y-1
+           active:shadow-none cursor-pointer;
+  }
+
+  .btn-primary {
+    @apply btn-retro bg-dog-orange text-white hover:bg-orange-600;
+  }
+
+  .btn-secondary {
+    @apply btn-retro bg-dog-tan text-dog-brown hover:bg-amber-200;
+  }
+
+  .btn-success {
+    @apply btn-retro bg-dog-green text-white hover:bg-green-700;
+  }
+
+  .btn-danger {
+    @apply btn-retro bg-dog-red text-white hover:bg-red-700;
+  }
+
+  .btn-small {
+    @apply px-2 py-1 text-sm shadow-retro-sm;
+  }
+
+  /* Card styles */
+  .card-retro {
+    @apply bg-white border-2 border-dog-brown shadow-retro p-4;
+  }
+
+  /* Input styles */
+  .input-retro {
+    @apply w-full px-3 py-2 border-2 border-dog-brown bg-white
+           focus:outline-none focus:ring-2 focus:ring-dog-orange;
+  }
+
+  .select-retro {
+    @apply w-full px-3 py-2 border-2 border-dog-brown bg-white
+           focus:outline-none focus:ring-2 focus:ring-dog-orange cursor-pointer;
+  }
+
+  /* Quick add button */
+  .quick-add-btn {
+    @apply px-3 py-2 font-mono font-bold text-sm border-2 border-dog-brown
+           bg-dog-cream hover:bg-dog-tan shadow-retro-sm
+           active:translate-x-0.5 active:translate-y-0.5 active:shadow-none
+           transition-all duration-75;
+  }
+
+  /* Category button */
+  .category-btn {
+    @apply px-4 py-3 text-center font-bold border-2 border-dog-brown
+           bg-white shadow-retro cursor-pointer transition-all duration-100
+           hover:bg-dog-cream;
+  }
+
+  .category-btn.selected {
+    @apply bg-dog-orange text-white translate-x-1 translate-y-1 shadow-none;
+  }
+
+  /* Badge styles */
+  .badge {
+    @apply inline-block px-2 py-0.5 text-xs font-bold border border-dog-brown;
+  }
+
+  .badge-draft {
+    @apply badge bg-gray-200 text-gray-700;
+  }
+
+  .badge-submitted {
+    @apply badge bg-dog-blue text-white;
+  }
+
+  .badge-approved {
+    @apply badge bg-dog-green text-white;
+  }
+
+  .badge-rejected {
+    @apply badge bg-dog-red text-white;
+  }
+
+  .badge-paid {
+    @apply badge bg-purple-600 text-white;
+  }
+
+  /* Table styles */
+  .table-retro {
+    @apply w-full border-collapse border-2 border-dog-brown;
+  }
+
+  .table-retro th {
+    @apply px-3 py-2 text-left bg-dog-tan border-b-2 border-dog-brown font-bold;
+  }
+
+  .table-retro td {
+    @apply px-3 py-2 border-b border-dog-brown;
+  }
+
+  .table-retro tr:hover td {
+    @apply bg-dog-cream;
+  }
+
+  /* Navigation */
+  .nav-link {
+    @apply px-3 py-2 font-bold hover:bg-dog-tan transition-colors;
+  }
+
+  .nav-link.active {
+    @apply bg-dog-orange text-white;
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--dog-cream);
+  border: 2px solid var(--dog-brown);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--dog-tan);
+  border: 2px solid var(--dog-brown);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--dog-orange);
+}
+
+/* Print styles for invoices */
+@media print {
+  body {
+    background: white;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .card-retro {
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+}
