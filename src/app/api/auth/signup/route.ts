@@ -96,9 +96,8 @@ export async function POST(request: Request) {
     })
   } catch (error) {
     console.error('Signup error:', error)
-    const msg = error instanceof Error ? error.message : String(error)
     return NextResponse.json(
-      { error: msg },
+      { error: 'Internal server error' },
       { status: 500 }
     )
   }
