@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 
-const GEMINI_API_KEY = 'AIzaSyBtsEJmDnlWwjOVsuVHnfFJHS_CNR12JhA'
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY
 
 const SYSTEM_PROMPT = `You are the DoG Assistant, a helpful chatbot for the Department of Growth Time Tracker application. Your role is to help users navigate and use the time tracking system effectively.
 
