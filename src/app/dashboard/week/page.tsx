@@ -156,7 +156,10 @@ export default function WeekPage() {
             const dayEntries = entriesByDate[day] || []
             const dayTotal = dayEntries.reduce((sum, e) => sum + parseFloat(e.hours), 0)
             const isToday = day === todayStr
-            const dayName = new Date(day).toLocaleDateString('en-US', { weekday: 'short' })
+            // Parse as local date to avoid timezone shift
+            const [year, month, dayNum] = day.split('-').map(Number)
+            const dayDate = new Date(year, month - 1, dayNum)
+            const dayName = dayDate.toLocaleDateString('en-US', { weekday: 'short' })
 
             return (
               <div

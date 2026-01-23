@@ -1,6 +1,19 @@
+// Parse date string as LOCAL time (not UTC)
+// "2025-01-22" should mean Jan 22 in user's timezone, not UTC
+function parseLocalDate(date: Date | string): Date {
+  if (date instanceof Date) return date
+  // If it's an ISO date string like "2025-01-22", parse as local
+  if (typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    const [year, month, day] = date.split('-').map(Number)
+    return new Date(year, month - 1, day)
+  }
+  // If it has time component, parse normally
+  return new Date(date)
+}
+
 // Date utilities
 export function formatDate(date: Date | string): string {
-  const d = new Date(date)
+  const d = parseLocalDate(date)
   return d.toLocaleDateString('en-US', {
     weekday: 'short',
     month: 'short',
@@ -10,7 +23,7 @@ export function formatDate(date: Date | string): string {
 }
 
 export function formatDateShort(date: Date | string): string {
-  const d = new Date(date)
+  const d = parseLocalDate(date)
   return d.toLocaleDateString('en-US', {
     month: 'short',
     day: 'numeric'
