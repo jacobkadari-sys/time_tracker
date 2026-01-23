@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect, useCallback, useMemo } from 'react'
-import { formatDateISO, formatHours, getWeekRange } from '@/lib/utils'
+import { useState, useEffect, useCallback } from 'react'
+import { formatDateISO, formatHours, getWeekRange, formatCurrency } from '@/lib/utils'
 import { ClientSearch } from '@/components/ClientSearch'
 
 type Client = {
@@ -36,6 +36,10 @@ export default function DashboardPage() {
   const [weekEntries, setWeekEntries] = useState<TimeEntry[]>([])
   const [loading, setLoading] = useState(true)
   const [userRole, setUserRole] = useState('CONTRACTOR')
+  const [hourlyRate, setHourlyRate] = useState(50)
+  const [editingRate, setEditingRate] = useState(false)
+  const [tempRate, setTempRate] = useState('50')
+  const [savingRate, setSavingRate] = useState(false)
 
   // Category editing state
   const [showCategoryModal, setShowCategoryModal] = useState(false)
@@ -51,15 +55,22 @@ export default function DashboardPage() {
   const [whatGotCompleted, setWhatGotCompleted] = useState('')
   const [saving, setSaving] = useState(false)
 
-  // Memoize date values to prevent unnecessary re-renders
-  const { today, weekStartStr, weekEndStr } = useMemo(() => {
+  // Date values - calculated only on client to avoid SSR timezone issues
+  const [dateInfo, setDateInfo] = useState<{ today: string; weekStartStr: string; weekEndStr: string } | null>(null)
+
+  // Set dates on client mount only
+  useEffect(() => {
     const { start, end } = getWeekRange()
-    return {
+    setDateInfo({
       today: formatDateISO(new Date()),
       weekStartStr: formatDateISO(start),
       weekEndStr: formatDateISO(end)
-    }
+    })
   }, [])
+
+  const today = dateInfo?.today || ''
+  const weekStartStr = dateInfo?.weekStartStr || ''
+  const weekEndStr = dateInfo?.weekEndStr || ''
 
   const fetchData = useCallback(async () => {
     try {
@@ -95,6 +106,9 @@ export default function DashboardPage() {
         setAllCategories(allCatsData.available)
       }
       setUserRole(userData.role || 'CONTRACTOR')
+      const rate = userData.defaultHourlyRate || 50
+      setHourlyRate(rate)
+      setTempRate(rate.toString())
 
       const allEntries = entriesData as TimeEntry[]
       setWeekEntries(allEntries)
@@ -107,8 +121,11 @@ export default function DashboardPage() {
   }, [today, weekStartStr, weekEndStr])
 
   useEffect(() => {
-    fetchData()
-  }, [fetchData])
+    // Only fetch after dates are calculated on client
+    if (dateInfo) {
+      fetchData()
+    }
+  }, [fetchData, dateInfo])
 
   const addHours = (amount: number) => {
     const current = parseFloat(hours) || 0
@@ -198,6 +215,28 @@ export default function DashboardPage() {
     }
   }
 
+  const saveHourlyRate = async () => {
+    const newRate = parseFloat(tempRate)
+    if (isNaN(newRate) || newRate < 0) return
+
+    setSavingRate(true)
+    try {
+      const res = await fetch('/api/auth/me', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ defaultHourlyRate: newRate })
+      })
+      if (res.ok) {
+        setHourlyRate(newRate)
+        setEditingRate(false)
+      }
+    } catch (error) {
+      console.error('Failed to save hourly rate:', error)
+    } finally {
+      setSavingRate(false)
+    }
+  }
+
   const selectedClientData = clients.find(c => c.id === selectedClient)
   const todayTotal = todayEntries.reduce((sum, e) => sum + parseFloat(e.hours), 0)
   const weekTotal = weekEntries.reduce((sum, e) => sum + parseFloat(e.hours), 0)
@@ -223,6 +262,44 @@ export default function DashboardPage() {
           <div className="card-retro text-center px-3 sm:px-4 py-2 flex-1 sm:flex-none">
             <div className="text-xs text-dog-brown opacity-70">THIS WEEK</div>
             <div className="text-lg sm:text-xl font-bold text-dog-green">{formatHours(weekTotal)}</div>
+          </div>
+          <div className="card-retro text-center px-3 sm:px-4 py-2 flex-1 sm:flex-none">
+            <div className="text-xs text-dog-brown opacity-70">HOURLY RATE</div>
+            {editingRate ? (
+              <div className="flex items-center gap-1">
+                <span className="text-dog-brown">$</span>
+                <input
+                  type="number"
+                  value={tempRate}
+                  onChange={(e) => setTempRate(e.target.value)}
+                  className="w-16 text-center font-bold border-b-2 border-dog-brown bg-transparent outline-none"
+                  min="0"
+                  step="0.01"
+                  autoFocus
+                />
+                <button
+                  onClick={saveHourlyRate}
+                  disabled={savingRate}
+                  className="text-dog-green font-bold text-sm"
+                >
+                  {savingRate ? '...' : '✓'}
+                </button>
+                <button
+                  onClick={() => { setEditingRate(false); setTempRate(hourlyRate.toString()) }}
+                  className="text-dog-red font-bold text-sm"
+                >
+                  ✕
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => setEditingRate(true)}
+                className="text-lg sm:text-xl font-bold text-dog-brown hover:text-dog-orange"
+                title="Click to edit"
+              >
+                {formatCurrency(hourlyRate)}/hr
+              </button>
+            )}
           </div>
         </div>
       </div>

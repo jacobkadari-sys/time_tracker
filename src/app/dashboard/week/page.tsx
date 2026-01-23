@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { formatDateISO, formatDateShort, formatHours, getWeekRange, formatCurrency } from '@/lib/utils'
 
 type TimeEntry = {
@@ -15,21 +15,34 @@ type TimeEntry = {
   category: { id: string; name: string }
 }
 
+type DateInfo = {
+  weekStart: Date
+  weekEnd: Date
+  weekStartStr: string
+  weekEndStr: string
+}
+
 export default function WeekPage() {
   const [entries, setEntries] = useState<TimeEntry[]>([])
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
+  const [dateInfo, setDateInfo] = useState<DateInfo | null>(null)
 
-  // Memoize date values to prevent unnecessary re-renders
-  const { weekStart, weekEnd, weekStartStr, weekEndStr } = useMemo(() => {
+  // Calculate dates only on client to avoid SSR timezone issues
+  useEffect(() => {
     const { start, end } = getWeekRange()
-    return {
+    setDateInfo({
       weekStart: start,
       weekEnd: end,
       weekStartStr: formatDateISO(start),
       weekEndStr: formatDateISO(end)
-    }
+    })
   }, [])
+
+  const weekStart = dateInfo?.weekStart || new Date()
+  const weekEnd = dateInfo?.weekEnd || new Date()
+  const weekStartStr = dateInfo?.weekStartStr || ''
+  const weekEndStr = dateInfo?.weekEndStr || ''
 
   const fetchEntries = useCallback(async () => {
     try {
@@ -46,8 +59,11 @@ export default function WeekPage() {
   }, [weekStartStr, weekEndStr])
 
   useEffect(() => {
-    fetchEntries()
-  }, [fetchEntries])
+    // Only fetch after dates are calculated on client
+    if (dateInfo) {
+      fetchEntries()
+    }
+  }, [fetchEntries, dateInfo])
 
   const handleSubmitWeek = async () => {
     if (entries.length === 0) return
@@ -116,7 +132,7 @@ export default function WeekPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-dog-brown">📅 This Week</h1>
+          <h1 className="text-2xl font-bold text-dog-brown">▸ This Week</h1>
           <p className="text-dog-brown opacity-70">
             {formatDateShort(weekStart)} - {formatDateShort(weekEnd)}
           </p>

@@ -89,7 +89,7 @@ export default function ClientsPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-dog-brown">🏢 Clients & Projects</h1>
+      <h1 className="text-2xl font-bold text-dog-brown">▸ Clients & Projects</h1>
 
       {/* Add client form */}
       <div className="card-retro">

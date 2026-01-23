@@ -113,7 +113,7 @@ export default function CategoriesPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-dog-brown">🏷 Categories</h1>
+      <h1 className="text-2xl font-bold text-dog-brown">▸ Categories</h1>
 
       {/* Add category form */}
       <div className="card-retro">

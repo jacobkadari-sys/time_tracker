@@ -54,7 +54,7 @@ export default function InvoicesPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-dog-brown">📄 My Invoices</h1>
+        <h1 className="text-2xl font-bold text-dog-brown">▸ My Invoices</h1>
       </div>
 
       {invoices.length === 0 ? (
