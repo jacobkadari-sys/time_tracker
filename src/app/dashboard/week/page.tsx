@@ -20,6 +20,7 @@ type DateInfo = {
   weekEnd: Date
   weekStartStr: string
   weekEndStr: string
+  todayStr: string
 }
 
 export default function WeekPage() {
@@ -35,7 +36,8 @@ export default function WeekPage() {
       weekStart: start,
       weekEnd: end,
       weekStartStr: formatDateISO(start),
-      weekEndStr: formatDateISO(end)
+      weekEndStr: formatDateISO(end),
+      todayStr: formatDateISO(new Date())
     })
   }, [])
 
@@ -43,6 +45,7 @@ export default function WeekPage() {
   const weekEnd = dateInfo?.weekEnd || new Date()
   const weekStartStr = dateInfo?.weekStartStr || ''
   const weekEndStr = dateInfo?.weekEndStr || ''
+  const todayStr = dateInfo?.todayStr || ''
 
   const fetchEntries = useCallback(async () => {
     try {
@@ -152,7 +155,7 @@ export default function WeekPage() {
           {weekDays.map(day => {
             const dayEntries = entriesByDate[day] || []
             const dayTotal = dayEntries.reduce((sum, e) => sum + parseFloat(e.hours), 0)
-            const isToday = day === formatDateISO(new Date())
+            const isToday = day === todayStr
             const dayName = new Date(day).toLocaleDateString('en-US', { weekday: 'short' })
 
             return (
