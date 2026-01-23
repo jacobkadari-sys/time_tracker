@@ -264,9 +264,9 @@ export default function DashboardPage() {
             <div className="text-lg sm:text-xl font-bold text-dog-green">{formatHours(weekTotal)}</div>
           </div>
           <div className="card-retro text-center px-3 sm:px-4 py-2 flex-1 sm:flex-none">
-            <div className="text-xs text-dog-brown opacity-70">HOURLY RATE</div>
+            <div className="text-xs text-dog-brown opacity-70">YOUR RATE</div>
             {editingRate ? (
-              <div className="flex items-center gap-1">
+              <div className="flex items-center justify-center gap-1">
                 <span className="text-dog-brown">$</span>
                 <input
                   type="number"
@@ -277,29 +277,23 @@ export default function DashboardPage() {
                   step="0.01"
                   autoFocus
                 />
-                <button
-                  onClick={saveHourlyRate}
-                  disabled={savingRate}
-                  className="text-dog-green font-bold text-sm"
-                >
+                <button onClick={saveHourlyRate} disabled={savingRate} className="text-dog-green font-bold text-sm">
                   {savingRate ? '...' : '✓'}
                 </button>
-                <button
-                  onClick={() => { setEditingRate(false); setTempRate(hourlyRate.toString()) }}
-                  className="text-dog-red font-bold text-sm"
-                >
+                <button onClick={() => { setEditingRate(false); setTempRate(hourlyRate.toString()) }} className="text-dog-red font-bold text-sm">
                   ✕
                 </button>
               </div>
             ) : (
               <button
                 onClick={() => setEditingRate(true)}
-                className="text-lg sm:text-xl font-bold text-dog-brown hover:text-dog-orange"
-                title="Click to edit"
+                className="text-lg sm:text-xl font-bold text-dog-brown hover:text-dog-orange transition-colors"
+                title="Click to adjust"
               >
                 {formatCurrency(hourlyRate)}/hr
               </button>
             )}
+            <div className="text-[10px] text-dog-brown opacity-50 mt-1">click to adjust</div>
           </div>
         </div>
       </div>

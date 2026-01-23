@@ -60,7 +60,7 @@ export function ChatHelper() {
   const quickQuestions = [
     'How do I log time?',
     'How do I submit my week?',
-    'What are categories?',
+    'How do I change my hourly rate?',
   ]
 
   return (

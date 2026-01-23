@@ -51,22 +51,11 @@ export async function PATCH(request: Request) {
 
         const user = await prisma.user.update({
             where: { id: session.id },
-            data: { defaultHourlyRate: rate },
-            select: {
-                id: true,
-                name: true,
-                email: true,
-                role: true,
-                defaultHourlyRate: true
-            }
+            data: { defaultHourlyRate: rate }
         })
 
         return NextResponse.json({
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            role: user.role,
-            defaultHourlyRate: user.defaultHourlyRate ? parseFloat(user.defaultHourlyRate.toString()) : 50
+            defaultHourlyRate: rate
         })
     } catch (error) {
         console.error('Update user error:', error)

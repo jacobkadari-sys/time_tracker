@@ -86,7 +86,7 @@ DoG Time Tracker is a time tracking and invoicing system for Department of Growt
 
 **"How do I edit a time entry?"** - Currently, you can't edit entries. Log a new one with corrections.
 
-**"What's the hourly rate?"** - Your admin sets your default hourly rate in your user profile
+**"How do I change my hourly rate?"** - Click on YOUR RATE in the dashboard header (shows your $/hr). You can adjust it anytime - the rate is applied when you generate invoices. Your admin reviews and approves invoices, so they'll see the rate you've set.
 
 ## TIPS FOR EFFICIENT TIME TRACKING
 - Log time daily (takes <10 seconds once you get the hang of it)
