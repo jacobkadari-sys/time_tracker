@@ -54,7 +54,7 @@ export async function POST(request: Request) {
 
     // Fall back to default categories if none provided or invalid
     if (categoriesToAssign.length === 0) {
-      const defaultCategoryNames = ['Operations', 'Client Work', 'Admin', 'General']
+      const defaultCategoryNames = ['Operations', 'Admin', 'Research', 'Marketing']
       const categories = await Promise.all(
         defaultCategoryNames.map(async (name) => {
           const category = await prisma.category.findFirst({ where: { name } })
