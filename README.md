@@ -12,23 +12,13 @@ A dead-simple hours tracker that eliminates contractor invoicing pain.
    ╚═══════════════════════════════════════╝
 ```
 
-## Quick Start
+## Basic Information Guide
 
-```bash
-# Install dependencies
-npm install
-
-# Set up the database
-npx prisma db push
-
-# Seed with test data
-npm run db:seed
-
-# Start the dev server
-npm run dev
+```
+https://docs.google.com/document/d/1JR9FXdWP-jQM8MJ7VyL-9Vgs9xGt4tZji4I7zoNybL4/edit?usp=sharing
 ```
 
-Open [http://localhost:3000](http://localhost:3000)
+Website link: https://time-tracker-8qdks8e0j-jacobkadari-sys-projects.vercel.app/dashboard 
 
 ## Test Accounts
 
