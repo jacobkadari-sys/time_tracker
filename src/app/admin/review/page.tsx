@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { formatDate, formatHours, formatCurrency } from '@/lib/utils'
 
@@ -20,6 +20,28 @@ export default function ReviewPage() {
   const [invoices, setInvoices] = useState<Invoice[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('SUBMITTED')
+  const [showExportMenu, setShowExportMenu] = useState(false)
+  const exportRef = useRef<HTMLDivElement>(null)
+
+  // Close export menu when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (exportRef.current && !exportRef.current.contains(event.target as Node)) {
+        setShowExportMenu(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  const handleExport = (format: 'summary' | 'detailed', status: string) => {
+    const params = new URLSearchParams()
+    if (status) params.append('status', status)
+    if (format === 'detailed') params.append('format', 'detailed')
+
+    window.location.href = `/api/admin/export?${params.toString()}`
+    setShowExportMenu(false)
+  }
 
   useEffect(() => {
     fetch(`/api/invoices${filter ? `?status=${filter}` : ''}`)
@@ -81,9 +103,9 @@ export default function ReviewPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-dog-brown">✓ Review Invoices</h1>
-        <div className="flex gap-2">
+      <div className="flex items-center justify-between flex-wrap gap-3">
+        <h1 className="text-2xl font-bold text-dog-brown">▸ Review Invoices</h1>
+        <div className="flex gap-2 flex-wrap items-center">
           {['SUBMITTED', 'APPROVED', 'REJECTED', ''].map(status => (
             <button
               key={status}
@@ -93,6 +115,64 @@ export default function ReviewPage() {
               {status || 'ALL'}
             </button>
           ))}
+
+          {/* Export Button */}
+          <div className="relative" ref={exportRef}>
+            <button
+              onClick={() => setShowExportMenu(!showExportMenu)}
+              className="btn-small btn-secondary flex items-center gap-1"
+              title="Export to CSV"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              CSV
+            </button>
+
+            {showExportMenu && (
+              <div className="absolute right-0 mt-2 w-56 bg-white border-2 border-dog-brown shadow-retro z-50">
+                <div className="p-2 border-b border-dog-tan bg-dog-cream">
+                  <span className="text-xs font-bold text-dog-brown">EXPORT OPTIONS</span>
+                </div>
+
+                <div className="p-2 border-b border-dog-tan">
+                  <p className="text-xs text-dog-brown opacity-70 mb-2">Summary (1 row per invoice)</p>
+                  <div className="flex flex-wrap gap-1">
+                    <button
+                      onClick={() => handleExport('summary', filter)}
+                      className="text-xs px-2 py-1 bg-dog-green text-white hover:bg-green-700"
+                    >
+                      Current View ({filter || 'All'})
+                    </button>
+                    <button
+                      onClick={() => handleExport('summary', '')}
+                      className="text-xs px-2 py-1 bg-dog-cream hover:bg-dog-tan border border-dog-tan"
+                    >
+                      All Invoices
+                    </button>
+                  </div>
+                </div>
+
+                <div className="p-2">
+                  <p className="text-xs text-dog-brown opacity-70 mb-2">Detailed (includes line items)</p>
+                  <div className="flex flex-wrap gap-1">
+                    <button
+                      onClick={() => handleExport('detailed', filter)}
+                      className="text-xs px-2 py-1 bg-dog-orange text-white hover:bg-orange-600"
+                    >
+                      Current View ({filter || 'All'})
+                    </button>
+                    <button
+                      onClick={() => handleExport('detailed', '')}
+                      className="text-xs px-2 py-1 bg-dog-cream hover:bg-dog-tan border border-dog-tan"
+                    >
+                      All Invoices
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

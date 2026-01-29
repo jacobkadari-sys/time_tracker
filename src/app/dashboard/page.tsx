@@ -1,8 +1,9 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { formatDateISO, formatHours, getWeekRange, formatCurrency } from '@/lib/utils'
 import { ClientSearch } from '@/components/ClientSearch'
+import { Timer } from '@/components/Timer'
 
 type Client = {
   id: string
@@ -131,6 +132,18 @@ export default function DashboardPage() {
     const current = parseFloat(hours) || 0
     const newValue = Math.max(0, current + amount)
     setHours(newValue.toFixed(1))
+  }
+
+  const handleTimerStop = (timerHours: number, clientId: string, categoryId: string) => {
+    // Auto-fill form with timer data
+    setSelectedClient(clientId)
+    setSelectedCategory(categoryId)
+    setHours(timerHours.toFixed(1))
+    // Focus on the description field
+    setTimeout(() => {
+      const descField = document.getElementById('whatDidYouDo')
+      if (descField) descField.focus()
+    }, 100)
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -304,6 +317,13 @@ export default function DashboardPage() {
           <strong>⚡ You haven&apos;t logged any time today!</strong> Log your hours to keep track.
         </div>
       )}
+
+      {/* Timer */}
+      <Timer
+        clients={clients.filter(c => !c.isSystem)}
+        categories={categories}
+        onTimerStop={handleTimerStop}
+      />
 
       {/* Main logging form */}
       <form onSubmit={handleSubmit} className="card-retro">

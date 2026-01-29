@@ -38,7 +38,7 @@ export function LogoWithText({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
       <Logo size={size} />
       <div>
         <h1 className={`${textSizes[size]} font-bold text-dog-brown leading-none`}>
-          Department of Growth
+          DoG
         </h1>
         <p className="text-xs text-dog-brown opacity-70">Time Tracker</p>
       </div>
